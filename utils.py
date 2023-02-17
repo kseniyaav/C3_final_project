@@ -4,6 +4,9 @@ from pprint import pprint
 
 
 def get_data(url):
+    '''
+    Функция берет данные транзакции из JSON по ссылке и отдает сообщение прошло или вышла ошибка
+    '''
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -16,6 +19,9 @@ def get_data(url):
 
 
 def get_filtered_data(data, filtered_empty_from=False):
+    '''
+    Функция фильтрует данные и оставляет только те, где есть EXECUTED
+    '''
     data = [x for x in data if "state" in x and x ["state"] == "EXECUTED"]
     if filtered_empty_from:
         data = [x for x in data if "from" in x]
@@ -23,12 +29,18 @@ def get_filtered_data(data, filtered_empty_from=False):
 
 
 def get_last_values(data, count_last_values):
+    '''
+    Функция оставляет последние 5 транзакций пользователей
+    '''
     data = sorted(data, key=lambda x: x["date"], reverse=True)
     data = data[:count_last_values]
     return data
 
 
 def get_formatted_data(data):
+    '''
+    Функция форматирует транзакции к нужному формату
+    '''
     formatted_data = []
     for row in data:
         date = datetime.strptime(row["date"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d.%m.%Y")
